@@ -153,4 +153,24 @@ class Bibliotheque {
         this.liste.forEach((ele) -> ele.print());
         System.out.println("");
     }
+
+    public Document search_doc_by_titre(String titre) {
+        for (int i = 0; i < this.liste.size(); i++) {
+            if(this.liste.get(i).get_titre().equals(titre)) {
+                return this.liste.get(i);
+            }
+        }
+        return null;
+    }
+
+    public Document search_doc_by_auteur(String auteur) {
+        for (int i = 0; i < this.liste.size(); i++) {
+            if(this.liste.get(i) instanceof Livre || this.liste.get(i) instanceof Dvd) {
+                if(this.liste.get(i).get_titre().equals(titre)) {
+                    return this.liste.get(i);
+                }
+            }
+        }
+        return null;
+    }
 }
