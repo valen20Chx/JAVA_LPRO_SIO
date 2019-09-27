@@ -3,11 +3,16 @@ class Main {
         Bibliotheque maBiblio = new Bibliotheque(0);
         
         maBiblio.input();
+        maBiblio.input();
 
-        maBiblio.print();
+        Document tempDoc = maBiblio.search_doc_by_titre("maison");
+        if(tempDoc != null) {
+            tempDoc.print();
+        }
 
-        if(maBiblio.search_doc("Clio") != null) {
-            maBiblio.search_doc("Clio").print();
+        tempDoc = maBiblio.search_doc_by_auteur("valentin");
+        if(tempDoc != null) {
+            tempDoc.print();
         }
     }
 }
