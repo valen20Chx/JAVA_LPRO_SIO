@@ -1,5 +1,3 @@
-package src;
-
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Scanner;
