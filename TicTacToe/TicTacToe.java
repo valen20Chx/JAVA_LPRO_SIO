@@ -12,6 +12,7 @@ public class TicTacToe {
     private Integer PLAYER_X;
     private Integer PLAYER_O;
     private int nb_align;
+    private Bot ennemy;
 
     // Constructor
     public TicTacToe()
@@ -25,6 +26,7 @@ public class TicTacToe {
         this.PLAYER_O = new Integer(2);
         this.nb_align = this.nb_collumns;
         this.play_v = new Vector<Point>(0);
+        this.ennemy = new Bot(this.PLAYER_O.intValue(), this.nb_collumns, this.nb_rows);
 
         for(int i = 0; i < this.nb_collumns; i++)
         {
@@ -90,13 +92,18 @@ public class TicTacToe {
                     this.grid[x][y] = (this.play_v.size() % 2 == 0 ? this.PLAYER_X : this.PLAYER_O);
                     this.play_v.add(new Point(x, y));
                     System.out.println("Position Correcte et enregistre");
-                    // this.update_game_state();
+                    this.update_game_state();
+                    // Bot play
+                    if(this.play_v.size() % 2 != 0)
+                    {
+                        Point ennemy_play = this.ennemy.play(this.grid); 
+                        this.play(ennemy_play.x, ennemy_play.y);
+                    }
                 }
                 else
                 {
                     System.out.println("Position Incorrecte");
                 }
-                this.update_game_state();
             }
         }
         else
@@ -120,77 +127,75 @@ public class TicTacToe {
             int diagonal_line_2 = 1;
             for(int i = 1; i < this.nb_align; i++)
             {
+                int jx = this.play_v.get(j).x;
+                int jy = this.play_v.get(j).y;
+                if((jy - i) >= 0)
+                {
+                    // Vertical Up
+                    if(this.grid[jx][jy] == this.grid[jx][jy - i])
+                    {
+                        vertical_line++;
+                    }
+                }
+                if((jy + i) < this.nb_rows)
+                {
+                    // Vertical Down
+                    if(this.grid[jx][jy] == this.grid[jx][jy + i])
+                    {
+                        vertical_line++;
+                    }
+                }
                 // If Not off to the left side
-                if(this.play_v.get(j).x - i >= 0)
+                if((jx - i) >= 0)
                 {
                     // Horizontal Left
-                    if(this.grid[this.play_v.get(j).x][this.play_v.get(j).y] == this.grid[this.play_v.get(j).x - i][this.play_v.get(j).y])
+                    if(this.grid[jx][jy] == this.grid[jx - i][jy])
                     {
                         horizontal_line++;
                     }
                     // If Not off to the top side
-                    if(this.play_v.get(j).y - i >= 0)
+                    if((jy - i) >= 0)
                     {
-                        // Vertical Up
-                        if(this.grid[this.play_v.get(j).x][this.play_v.get(j).y] == this.grid[this.play_v.get(j).x][this.play_v.get(j).y - i])
-                        {
-                            vertical_line++;
-                        }
                         // Diagonal 2 Top Left
-                        if(this.grid[this.play_v.get(j).x][this.play_v.get(j).y] == this.grid[this.play_v.get(j).x - i][this.play_v.get(j).y - i])
+                        if(this.grid[jx][jy] == this.grid[jx - i][jy - i])
                         {
                             diagonal_line_2++;
                         }
                     }
                     // If Not off to the bottom side
-                    if(this.play_v.get(j).y + i < this.nb_rows)
+                    if((jy + i) < this.nb_rows)
                     {
-                        // Vertical Down
-                        if(this.grid[this.play_v.get(j).x][this.play_v.get(j).y] == this.grid[this.play_v.get(j).x][this.play_v.get(j).y + i])
-                        {
-                            vertical_line++;
-                        }
                         // Diagonal 2 Bottom Left
-                        if(this.grid[this.play_v.get(j).x][this.play_v.get(j).y] == this.grid[this.play_v.get(j).x - i][this.play_v.get(j).y + i])
+                        if(this.grid[jx][jy] == this.grid[jx - i][jy + i])
                         {
-                            diagonal_line_2++;
+                            diagonal_line_1++;
                         }
                     }
                 }
                 // If not off to the Right Side
-                if(this.play_v.get(j).x + i < this.nb_collumns)
+                if((jx + i) < this.nb_collumns)
                 {
                     // Horizontal Right
-                    if(this.grid[this.play_v.get(j).x][this.play_v.get(j).y] == this.grid[this.play_v.get(j).x + i][this.play_v.get(j).y])
+                    if(this.grid[jx][jy] == this.grid[jx + i][jy])
                     {
                         horizontal_line++;
                     }
                     // If Not off to the top side
-                    if(this.play_v.get(j).y - i >= 0)
+                    if((jy - i) >= 0)
                     {
-                        // Vertical Up
-                        if(this.grid[this.play_v.get(j).x][this.play_v.get(j).y] == this.grid[this.play_v.get(j).x][this.play_v.get(j).y - i])
-                        {
-                            vertical_line++;
-                        }
                         // Diagonal 1 Top Right
-                        if(this.grid[this.play_v.get(j).x][this.play_v.get(j).y] == this.grid[this.play_v.get(j).x + i][this.play_v.get(j).y - i])
+                        if(this.grid[jx][jy] == this.grid[jx + i][jy - i])
                         {
                             diagonal_line_1++;
                         }
                     }
                     // If Not off to the bottom side
-                    if(this.play_v.get(j).y + i < this.nb_rows)
+                    if((jy + i) < this.nb_rows)
                     {
-                        // Vertical Down
-                        if(this.grid[this.play_v.get(j).x][this.play_v.get(j).y] == this.grid[this.play_v.get(j).x][this.play_v.get(j).y + i])
-                        {
-                            vertical_line++;
-                        }
                         // Diagonal 1 Bottom Right
-                        if(this.grid[this.play_v.get(j).x][this.play_v.get(j).y] == this.grid[this.play_v.get(j).x + i][this.play_v.get(j).y + i])
+                        if(this.grid[jx][jy] == this.grid[jx + i][jy + i])
                         {
-                            diagonal_line_1++;
+                            diagonal_line_2++;
                         }
                     }
                 }
