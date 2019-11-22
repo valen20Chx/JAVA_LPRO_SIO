@@ -1,13 +1,13 @@
 import java.util.Vector;
 import java.awt.Point;
 
-public class Bot {
+public class BotEasy {
     private int cols;
     private int lines;
     private Vector<Point> orderPlays;
     private int id;
 
-    Bot(int id, int cols, int lines)
+    BotEasy(int id, int cols, int lines)
     {
         this.id = id;
         this.cols = cols;

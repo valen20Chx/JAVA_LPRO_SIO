@@ -92,3 +92,4 @@ class Etudiant {
         return this.moyenne;
     }
 }
+

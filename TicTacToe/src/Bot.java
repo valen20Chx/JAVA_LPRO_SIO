@@ -41,8 +41,8 @@ public class Bot {
         return play;
     }
 
-    private Point minimax(int[][] grid, int depth, boolean maximizingPlayer)
+    /*private Point minimax(int[][] grid, int depth, boolean maximizingPlayer)
     {
 
-    }
+    }*/
 }

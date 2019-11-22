@@ -12,7 +12,7 @@ public class TicTacToe {
     private Integer PLAYER_X;
     private Integer PLAYER_O;
     private int nb_align;
-    private Bot ennemy;
+    private BotEasy ennemy;
 
     // Constructor
     public TicTacToe()
@@ -26,7 +26,7 @@ public class TicTacToe {
         this.PLAYER_O = new Integer(2);
         this.nb_align = this.nb_collumns;
         this.play_v = new Vector<Point>(0);
-        this.ennemy = new Bot(this.PLAYER_O.intValue(), this.nb_collumns, this.nb_rows);
+        this.ennemy = new BotEasy(this.PLAYER_O.intValue(), this.nb_collumns, this.nb_rows);
 
         for(int i = 0; i < this.nb_collumns; i++)
         {
