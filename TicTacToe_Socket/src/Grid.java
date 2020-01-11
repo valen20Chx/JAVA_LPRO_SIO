@@ -28,7 +28,7 @@ public class Grid extends JFrame implements MouseListener {
     public Grid() {
         this.width = 600;
         this.height = 600;
-        this.margin_top = 40;
+        this.margin_top = 80;
         this.margin_bottom = this.margin_top;
         this.margin_left = 40;
         this.margin_right = this.margin_left;
@@ -151,11 +151,17 @@ public class Grid extends JFrame implements MouseListener {
         }
 
         if (this.grid.is_game_finished()) {
-            g.drawString("Player " + (this.grid.get_player_won() == 1 ? "X" : "O") + " Won", this.margin_left,
-                    this.margin_top / 2);
+            if(this.grid.get_player_won() == 0) {
+                g.drawString("It's a tie!", this.margin_left,
+                        this.getHeight() - (this.margin_bottom / 2));
+
+            } else {
+                g.drawString("Player " + (this.grid.get_player_won() == 1 ? "X" : "O") + " Won", this.margin_left,
+                        this.getHeight() - (this.margin_bottom / 2));
+            }
         } else {
             g.drawString("Player " + (this.grid.get_play_size() % 2 == 0 ? "X" : "O") + " Turn", this.margin_left,
-                    this.margin_top / 2);
+            this.getHeight() - (this.margin_bottom / 2));
         }
     }
 
