@@ -81,14 +81,18 @@ class Server {
         switch (player) {
             case 1:
             try {
-                dos = new DataOutputStream(player1.getOutputStream());
+                if(player1.isConnected()) {
+                    dos = new DataOutputStream(player1.getOutputStream());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
                 break;
             case 2:
             try {
-                dos = new DataOutputStream(player2.getOutputStream());
+                if(player2.isConnected()) {
+                    dos = new DataOutputStream(player2.getOutputStream());
+                }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -118,7 +122,9 @@ class Server {
         switch (player) {
             case 1:
             try {
-                dis = new DataInputStream(this.player1.getInputStream());
+                if(!player1.isClosed()) {
+                    dis = new DataInputStream(this.player1.getInputStream());
+                }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -126,7 +132,9 @@ class Server {
                 break;
             case 2:
             try {
-                dis = new DataInputStream(this.player2.getInputStream());
+                if(!player2.isClosed()) {
+                    dis = new DataInputStream(this.player2.getInputStream());
+                }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -137,12 +145,24 @@ class Server {
         if(dis != null) {
             try {
                 point.x = dis.readInt();
+                if(point.x == -1) {
+                    switch (player) {
+                        case 1:
+                            player1.close();
+                            break;
+                        case 2:
+                            player2.close();
+                            break;
+                    }
+                }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             try {
-                point.y = dis.readInt();
+                if(!(player == 1 ? player1 : player2).isClosed()) {
+                    point.y = dis.readInt();
+                }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -150,5 +170,18 @@ class Server {
         }
 
         return new Point(point.x, point.y);
+    }
+
+    public boolean isClosed(int player) {
+        boolean res = false;
+        switch(player) {
+            case 1:
+                res = this.player1.isClosed();
+                break;
+            case 2:
+                res = this.player2.isClosed();
+                break;
+        }
+        return res;
     }
 }

@@ -107,6 +107,10 @@ public class Grid extends JFrame implements MouseListener {
                 this.myTurn = true;
             }
         }
+        if(this.grid.is_game_finished() && !this.socket.isClosed()) {
+            this.socket.sendPlay(new Point(-1, 0));
+            this.socket.close();
+        }
     }
 
     public void paint(Graphics g) {

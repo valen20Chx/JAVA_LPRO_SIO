@@ -90,4 +90,17 @@ class Client {
 
         return new Point(point.x, point.y);
     }
+
+    public void close() {
+        try {
+            this.socket.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isClosed() {
+        return this.socket.isClosed();
+    }
 }
