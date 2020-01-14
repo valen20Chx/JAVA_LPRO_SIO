@@ -3,6 +3,7 @@ import java.net.Socket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 
 import java.awt.Point;
@@ -80,23 +81,22 @@ class Server {
         DataOutputStream dos = null;
         switch (player) {
             case 1:
-            try {
-                if(player1.isConnected()) {
-                    dos = new DataOutputStream(player1.getOutputStream());
+                try {
+                    if(player1.isConnected()) {
+                        dos = new DataOutputStream(player1.getOutputStream());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
                 break;
             case 2:
-            try {
-                if(player2.isConnected()) {
-                    dos = new DataOutputStream(player2.getOutputStream());
+                try {
+                    if(player2.isConnected()) {
+                        dos = new DataOutputStream(player2.getOutputStream());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
                 break;
         }
 
@@ -123,11 +123,16 @@ class Server {
             case 1:
             try {
                 if(!player1.isClosed()) {
-                    dis = new DataInputStream(this.player1.getInputStream());
+                    // dis = new DataInputStream(this.player1.getInputStream());
+                    ObjectInputStream is = new ObjectInputStream(this.player1.getInputStream());
+                    point = (Point) is.readObject();
                 }
+                 
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            } catch(ClassNotFoundException e) {
+                System.out.println("Error ClassNotFoundExeption: " + e.getMessage());
             }
                 break;
             case 2:

@@ -1,10 +1,9 @@
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.awt.Point;
 
 class Client {
@@ -36,26 +35,11 @@ class Client {
     }
 
     public void sendPlay(Point play) {
-        DataOutputStream dos = null;
         try {
-            dos = new DataOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if(dos != null) {
-            try {
-                dos.writeInt(play.x);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            try {
-                dos.writeInt(play.y);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            ObjectOutputStream os = new ObjectOutputStream(this.socket.getOutputStream());
+            os.writeObject(play);
+        } catch(IOException e) {
+            System.out.println("Error ObjectOutputStream: " + e.getMessage());
         }
     }
 
@@ -64,31 +48,17 @@ class Client {
     }
 
     public Point readPlay() {
-        DataInputStream dis = null;
-        Point point = new Point();
+        Point point = null;
         try {
-            dis = new DataInputStream(this.socket.getInputStream());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ObjectInputStream is = new ObjectInputStream(this.socket.getInputStream());
+            point = (Point) is.readObject();
+        } catch(IOException e) {
+            System.out.println("Error ObjectOutputStream: " + e.getMessage());
+        } catch(ClassNotFoundException e) {
+            System.out.println("Error ClassNotFoundExeption: " + e.getMessage());
         }
 
-        if(dis != null) {
-            try {
-                point.x = dis.readInt();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            try {
-                point.y = dis.readInt();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
-        return new Point(point.x, point.y);
+        return point;
     }
 
     public void close() {
