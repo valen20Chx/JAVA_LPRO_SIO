@@ -37,7 +37,7 @@ public class Drawing extends JFrame implements MouseListener {
 
         this.point1 = new Point(0,0);
         this.point2 = new Point(0,0);
-        this.lineWidth = 3;
+        this.lineWidth = 10;
 
         this.drawing = false;
         this.mouseInWindow = false;
@@ -89,8 +89,8 @@ public class Drawing extends JFrame implements MouseListener {
             for(int i = 0; i < this.lineWidth; i++) {
                 Point coefDir = new Point(Math.abs(this.point1.x - this.point2.x), Math.abs(this.point1.y - this.point2.y));
                 Point normalCoefDir = new Point((coefDir.x == 0 ? 0 : coefDir.y / coefDir.x), (coefDir.y == 0 ? 0 : coefDir.x / coefDir.y));
-                Point tempPoint1 = new Point(this.point1.x + (i * (normalCoefDir.x)), this.point1.y + (i * (normalCoefDir.y)));
-                Point tempPoint2 = new Point(this.point2.x + (i * (normalCoefDir.x)), this.point2.y + (i * (normalCoefDir.y)));
+                Point tempPoint1 = new Point(this.point1.x + (i + (normalCoefDir.x)), this.point1.y + (i + (normalCoefDir.y)));
+                Point tempPoint2 = new Point(this.point2.x + (i + (normalCoefDir.x)), this.point2.y + (i + (normalCoefDir.y)));
                 
                 g.drawLine(tempPoint1.x, tempPoint1.y, tempPoint2.x, tempPoint2.y);
             }
