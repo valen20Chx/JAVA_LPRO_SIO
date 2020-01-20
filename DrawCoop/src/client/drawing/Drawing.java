@@ -1,3 +1,5 @@
+package src.client.drawing;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -6,20 +8,17 @@ import java.awt.Point;
 import javax.swing.*;
 
 import java.awt.event.*;
+import java.util.Vector;
 
 public class Drawing extends JFrame implements MouseListener {
     private static final long serialVersionUID = 1L;
 
     private int width;
     private int height;
-    private int margin_top;
-    private int margin_bottom;
-    private int margin_left;
-    private int margin_right;
 
     private Point point1;
     private Point point2;
-    private int lineWidth;
+    // private int lineWidth;
 
     private boolean drawing;
     private boolean mouseInWindow;
@@ -30,14 +29,10 @@ public class Drawing extends JFrame implements MouseListener {
     {
         this.width = 600;
         this.height = 600;
-        this.margin_top = 40;
-        this.margin_bottom = this.margin_top;
-        this.margin_left = 40;
-        this.margin_right = this.margin_left;
 
         this.point1 = new Point(0,0);
         this.point2 = new Point(0,0);
-        this.lineWidth = 10;
+        // this.lineWidth = 10;
 
         this.drawing = false;
         this.mouseInWindow = false;
@@ -77,22 +72,16 @@ public class Drawing extends JFrame implements MouseListener {
         // g.drawRect(this.margin_left, this.margin_top, rectW, rectH);
         if(this.drawing && this.mouseInWindow) {
             this.point2 = this.getMousePosition();
-            // // Top
-            // g.drawLine(this.point1.x, this.point1.y - 1, this.point2.x, this.point2.y - 1);
-            // // Bottom
-            // g.drawLine(this.point1.x, this.point1.y + 1, this.point2.x, this.point2.y + 1);
-            // // Left
-            // g.drawLine(this.point1.x - 1, this.point1.y, this.point2.x - 1, this.point2.y);
-            // // Right
-            // g.drawLine(this.point1.x + 1, this.point1.y, this.point2.x + 1, this.point2.y);
+
+            // Create Brush
+            Brush drawBrush = new PencilBrush(this.point1, this.point2);
+
+            // Get Points Arrays
+            Vector<Point> points1 = drawBrush.getPoints(1);
+            Vector<Point> points2 = drawBrush.getPoints(2);
             
-            for(int i = 0; i < this.lineWidth; i++) {
-                Point coefDir = new Point(Math.abs(this.point1.x - this.point2.x), Math.abs(this.point1.y - this.point2.y));
-                Point normalCoefDir = new Point((coefDir.x == 0 ? 0 : coefDir.y / coefDir.x), (coefDir.y == 0 ? 0 : coefDir.x / coefDir.y));
-                Point tempPoint1 = new Point(this.point1.x + (i + (normalCoefDir.x)), this.point1.y + (i + (normalCoefDir.y)));
-                Point tempPoint2 = new Point(this.point2.x + (i + (normalCoefDir.x)), this.point2.y + (i + (normalCoefDir.y)));
-                
-                g.drawLine(tempPoint1.x, tempPoint1.y, tempPoint2.x, tempPoint2.y);
+            for(int i = 0; i < points1.size(); i++) {
+                g.drawLine(points1.get(i).x, points1.get(i).y, points2.get(i).x, points2.get(i).y);
             }
 
             System.out.println("(" + this.point1.x + " : " + this.point1.y + ") -> (" + this.point2.x + " : " + this.point2.y + ")");
