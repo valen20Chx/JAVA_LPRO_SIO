@@ -24,6 +24,9 @@ public class Drawing extends JFrame implements MouseListener {
     private Point point2;
     // private int lineWidth;
 
+    private Point sockPoint1;
+    private Point sockPoint2;
+
     private boolean drawing;
     private boolean mouseInWindow;
 
@@ -31,13 +34,18 @@ public class Drawing extends JFrame implements MouseListener {
 
     private int framerate;
 
+    private Client socket;
+
     public Drawing()
     {
         this.width = 600;
         this.height = 600;
 
-        this.point1 = new Point(0,0);
-        this.point2 = new Point(0,0);
+        this.point1 = null;
+        this.point2 = null;
+        this.sockPoint1 = null;
+        this.sockPoint2 = null;
+
         // this.lineWidth = 10;
 
         this.drawing = false;
@@ -45,8 +53,11 @@ public class Drawing extends JFrame implements MouseListener {
 
         this.winSize = new Dimension();
 
-        this.framerate = 69;
+        this.framerate = 60;
 
+        this.socket = new Client("localhost", 3300);
+        this.socket.start();
+        
         this.setBackground(new Color(255, 255, 255));
 
         addMouseListener(this);
@@ -95,6 +106,9 @@ public class Drawing extends JFrame implements MouseListener {
             // Create Brush
             Brush drawBrush = new PencilBrush(new Point(this.point1.x, this.point1.y), new Point(this.point2.x, this.point2.y));
 
+            this.socket.writeThread.pushPoint(new Point(this.point1.x, this.point1.y));
+            this.socket.writeThread.pushPoint(new Point(this.point2.x, this.point2.y));
+
             // Get Points Arrays
             Vector<Point> points1 = drawBrush.getPoints(1);
             Vector<Point> points2 = drawBrush.getPoints(2);
@@ -108,6 +122,28 @@ public class Drawing extends JFrame implements MouseListener {
 
             System.out.println("(" + this.point1.x + " : " + this.point1.y + ") -> (" + this.point2.x + " : " + this.point2.y + ")");
             this.point1 = this.point2;
+        }
+
+        if(this.sockPoint1 == null) {
+            this.sockPoint1 = this.socket.readThread.pullPoint();
+        } else if(this.sockPoint2 == null) {
+            this.sockPoint2 = this.socket.readThread.pullPoint();
+        } else {
+            Brush drawBrush = new PencilBrush(new Point(this.sockPoint1.x, this.sockPoint1.y), new Point(this.sockPoint2.x, this.sockPoint2.y));
+
+            // Get Points Arrays
+            Vector<Point> points1 = drawBrush.getPoints(1);
+            Vector<Point> points2 = drawBrush.getPoints(2);
+
+            // System.out.println("Points 1 : " + points1);
+            // System.out.println("Points 2 : " + points2);
+            
+            for(int i = 0; i < points1.size(); i++) {
+                g.drawLine(points1.get(i).x, points1.get(i).y, points2.get(i).x, points2.get(i).y);
+            }
+            // reset
+            this.sockPoint1 = null;
+            this.sockPoint2 = null;
         }
     }
 
