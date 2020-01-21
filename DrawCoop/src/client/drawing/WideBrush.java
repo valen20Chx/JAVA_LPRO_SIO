@@ -1,9 +1,10 @@
-package src.client.drawing;
+// package src.client.drawing;
 
 import java.awt.Point;
 
 public class WideBrush extends Brush {
     public WideBrush(Point point1, Point point2, int width) {
+        super();
         for (int i = 0; i < width; i++) {
             Point coefDir = new Point(Math.abs(point1.x - point2.x), Math.abs(point1.y - point2.y));
             Point normalCoefDir = new Point((coefDir.x == 0 ? 0 : coefDir.y / coefDir.x), (coefDir.y == 0 ? 0 : coefDir.x / coefDir.y));

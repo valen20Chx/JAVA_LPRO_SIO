@@ -1,4 +1,4 @@
-package src.client.drawing;
+// package src.client.drawing;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,6 +8,10 @@ import java.awt.Point;
 import javax.swing.*;
 
 import java.awt.event.*;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.temporal.Temporal;
+import java.util.Timer;
 import java.util.Vector;
 
 public class Drawing extends JFrame implements MouseListener {
@@ -25,6 +29,8 @@ public class Drawing extends JFrame implements MouseListener {
 
     private Dimension winSize;
 
+    private int framerate;
+
     public Drawing()
     {
         this.width = 600;
@@ -39,6 +45,8 @@ public class Drawing extends JFrame implements MouseListener {
 
         this.winSize = new Dimension();
 
+        this.framerate = 69;
+
         this.setBackground(new Color(255, 255, 255));
 
         addMouseListener(this);
@@ -51,41 +59,55 @@ public class Drawing extends JFrame implements MouseListener {
     }
 
     public void loop() {
+        Long now = System.currentTimeMillis();
+        Long lastFrame = System.currentTimeMillis();
+
         while(this.isVisible()){
+            // Set Time
+            now = System.currentTimeMillis();
+            Long duration = now - lastFrame;
+            if(duration < (1000 / this.framerate)) {
+                Long delta = (1000 / this.framerate) - duration;
+                try {
+                    Thread.sleep(delta);
+                } catch(Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
             this.repaint();
+            
+            lastFrame = System.currentTimeMillis();
         }
     }
 
     public void paint(Graphics g)
     {
-        // Dimmensions Rectangle contenaire
-        // int rectW = this.getSize().width - (this.margin_left + this.margin_right);
-        // int rectH = this.getSize().height - (this.margin_top + this.margin_bottom);
-
-        // 
         if(this.getSize().width != this.winSize.width || this.getSize().height != this.winSize.height) {    
             // Clear background
             super.paint(g);
             this.winSize = this.getSize();
         }
-        // Draw Rectangle contenaire
-        // g.drawRect(this.margin_left, this.margin_top, rectW, rectH);
+
         if(this.drawing && this.mouseInWindow) {
             this.point2 = this.getMousePosition();
 
             // Create Brush
-            Brush drawBrush = new PencilBrush(this.point1, this.point2);
+            Brush drawBrush = new PencilBrush(new Point(this.point1.x, this.point1.y), new Point(this.point2.x, this.point2.y));
 
             // Get Points Arrays
             Vector<Point> points1 = drawBrush.getPoints(1);
             Vector<Point> points2 = drawBrush.getPoints(2);
+
+            // System.out.println("Points 1 : " + points1);
+            // System.out.println("Points 2 : " + points2);
             
             for(int i = 0; i < points1.size(); i++) {
                 g.drawLine(points1.get(i).x, points1.get(i).y, points2.get(i).x, points2.get(i).y);
             }
 
             System.out.println("(" + this.point1.x + " : " + this.point1.y + ") -> (" + this.point2.x + " : " + this.point2.y + ")");
-            this.point1 = new Point(this.point2.x, this.point2.y);
+            this.point1 = this.point2;
         }
     }
 
