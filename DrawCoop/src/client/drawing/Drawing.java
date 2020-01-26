@@ -53,7 +53,7 @@ public class Drawing extends JFrame implements MouseListener {
 
         this.winSize = new Dimension();
 
-        this.framerate = 60;
+        this.framerate = 30;
 
         this.socket = new Client("localhost", 3300);
         this.socket.start();
@@ -86,6 +86,24 @@ public class Drawing extends JFrame implements MouseListener {
                 }
             }
 
+            NetFlag flag = this.socket.readThread.pullFlag();
+
+            if(flag != null) {
+                switch (flag) {
+                    case POINT:
+                        System.out.println("Recieved a point");
+                        if(this.sockPoint1 == null) {
+                            this.sockPoint1 = this.socket.readThread.pullPoint();
+                        } else if(this.sockPoint2 == null) {
+                            this.sockPoint2 = this.socket.readThread.pullPoint();
+                            this.repaint();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
             this.repaint();
             
             lastFrame = System.currentTimeMillis();
@@ -105,8 +123,9 @@ public class Drawing extends JFrame implements MouseListener {
 
             // Create Brush
             Brush drawBrush = new PencilBrush(new Point(this.point1.x, this.point1.y), new Point(this.point2.x, this.point2.y));
-
+            this.socket.writeThread.pushFlag(NetFlag.POINT);
             this.socket.writeThread.pushPoint(new Point(this.point1.x, this.point1.y));
+            this.socket.writeThread.pushFlag(NetFlag.POINT);
             this.socket.writeThread.pushPoint(new Point(this.point2.x, this.point2.y));
 
             // Get Points Arrays
@@ -124,11 +143,7 @@ public class Drawing extends JFrame implements MouseListener {
             this.point1 = this.point2;
         }
 
-        if(this.sockPoint1 == null) {
-            this.sockPoint1 = this.socket.readThread.pullPoint();
-        } else if(this.sockPoint2 == null) {
-            this.sockPoint2 = this.socket.readThread.pullPoint();
-        } else {
+        if(this.sockPoint1 != null && this.sockPoint2 != null) {
             Brush drawBrush = new PencilBrush(new Point(this.sockPoint1.x, this.sockPoint1.y), new Point(this.sockPoint2.x, this.sockPoint2.y));
 
             // Get Points Arrays

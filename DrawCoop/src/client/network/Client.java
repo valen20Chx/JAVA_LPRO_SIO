@@ -26,4 +26,10 @@ public class Client extends Thread {
 
     public void run() {}
 
+    public void close() {
+        this.writeThread.close();
+        this.readThread.close();
+        this.socket.close();
+    }
+
 }

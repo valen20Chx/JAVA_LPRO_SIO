@@ -19,4 +19,10 @@ public class Client extends Thread {
             System.out.println("Error: " + e.getMessage());
         }
     }
+
+    public void close() {
+        this.readThread.close();
+        this.writeThread.close();
+        this.socket.close();
+    }
 }
