@@ -91,7 +91,7 @@ public class Drawing extends JFrame implements MouseListener {
             if(flag != null) {
                 switch (flag) {
                     case POINT:
-                        System.out.println("Recieved a point");
+                        // System.out.println("Recieved a point");
                         if(this.sockPoint1 == null) {
                             this.sockPoint1 = this.socket.readThread.pullPoint();
                         } else if(this.sockPoint2 == null) {
@@ -139,7 +139,7 @@ public class Drawing extends JFrame implements MouseListener {
                 g.drawLine(points1.get(i).x, points1.get(i).y, points2.get(i).x, points2.get(i).y);
             }
 
-            System.out.println("(" + this.point1.x + " : " + this.point1.y + ") -> (" + this.point2.x + " : " + this.point2.y + ")");
+            // System.out.println("(" + this.point1.x + " : " + this.point1.y + ") -> (" + this.point2.x + " : " + this.point2.y + ")");
             this.point1 = this.point2;
         }
 

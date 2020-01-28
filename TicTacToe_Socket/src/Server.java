@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 
 import java.awt.Point;
@@ -78,103 +79,83 @@ class Server {
     }
 
     public void sendPlay(Point play, int player) {
-        DataOutputStream dos = null;
         switch (player) {
             case 1:
                 try {
-                    if(player1.isConnected()) {
-                        dos = new DataOutputStream(player1.getOutputStream());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    ObjectOutputStream os = new ObjectOutputStream(this.player1.getOutputStream());
+                    os.writeObject(play);
+                } catch(IOException e) {
+                    System.out.println("Error ObjectOutputStream: " + e.getMessage());
                 }
                 break;
             case 2:
                 try {
-                    if(player2.isConnected()) {
-                        dos = new DataOutputStream(player2.getOutputStream());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    ObjectOutputStream os = new ObjectOutputStream(this.player2.getOutputStream());
+                    os.writeObject(play);
+                } catch(IOException e) {
+                    System.out.println("Error ObjectOutputStream: " + e.getMessage());
                 }
                 break;
         }
-
-        if(dos != null) {
-            try {
-                dos.writeInt(play.x);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            try {
-                dos.writeInt(play.y);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
     }
+    
 
     public Point readPlay(int player) {
-        DataInputStream dis = null;
         Point point = new Point();
         switch (player) {
             case 1:
-            try {
-                if(!player1.isClosed()) {
-                    // dis = new DataInputStream(this.player1.getInputStream());
-                    ObjectInputStream is = new ObjectInputStream(this.player1.getInputStream());
-                    point = (Point) is.readObject();
+                try {
+                    if(!player1.isClosed()) {
+                        // dis = new DataInputStream(this.player1.getInputStream());
+                        ObjectInputStream is = new ObjectInputStream(this.player1.getInputStream());
+                        point = (Point) is.readObject();
+                    }
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch(ClassNotFoundException e) {
+                    System.out.println("Error ClassNotFoundExeption: " + e.getMessage());
                 }
-                 
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch(ClassNotFoundException e) {
-                System.out.println("Error ClassNotFoundExeption: " + e.getMessage());
-            }
                 break;
             case 2:
-            try {
-                if(!player2.isClosed()) {
-                    dis = new DataInputStream(this.player2.getInputStream());
+                try {
+                    if(!player1.isClosed()) {
+                        // dis = new DataInputStream(this.player1.getInputStream());
+                        ObjectInputStream is = new ObjectInputStream(this.player2.getInputStream());
+                        point = (Point) is.readObject();
+                    }
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch(ClassNotFoundException e) {
+                    System.out.println("Error ClassNotFoundExeption: " + e.getMessage());
                 }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
                 break;
         }
 
-        if(dis != null) {
-            try {
-                point.x = dis.readInt();
-                if(point.x == -1) {
-                    switch (player) {
-                        case 1:
-                            player1.close();
-                            break;
-                        case 2:
-                            player2.close();
-                            break;
+        
+        if(point.x == -1) {
+            switch (player) {
+                case 1:
+                    try {
+                        player1.close();
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
                     }
-                }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            try {
-                if(!(player == 1 ? player1 : player2).isClosed()) {
-                    point.y = dis.readInt();
-                }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                    break;
+                case 2:
+                    try {
+                        player2.close();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    break;
             }
         }
 
-        return new Point(point.x, point.y);
+        return point;
     }
 
     public boolean isClosed(int player) {

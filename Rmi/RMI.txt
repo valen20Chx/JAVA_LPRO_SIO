@@ -1,0 +1,15 @@
+RMI - Remote Method Invocation
+
+interface {
+    entete d'une fonction
+}
+
+Serveur : qui implemente l'interface
+    Il redefinit les fonctions d'interfaces
+    Construit un serveur de noms
+    On construit un object serveur
+    On enregistre le serveur sur le serveur de noms
+
+Client :
+    Recherche le serveur (ou service) dans le serveur de noms
+    Appelle les fonctions (du serveur) a distance

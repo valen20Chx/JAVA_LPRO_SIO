@@ -29,7 +29,11 @@ public class Client extends Thread {
     public void close() {
         this.writeThread.close();
         this.readThread.close();
-        this.socket.close();
+        try {
+            this.socket.close();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
 }

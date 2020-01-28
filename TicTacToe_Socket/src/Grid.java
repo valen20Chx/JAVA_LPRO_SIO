@@ -25,7 +25,7 @@ public class Grid extends JFrame implements MouseListener {
 
     private Client socket;
 
-    public Grid() {
+    public Grid(String host, int port) {
         this.width = 600;
         this.height = 600;
         this.margin_top = 80;
@@ -36,7 +36,7 @@ public class Grid extends JFrame implements MouseListener {
         this.nb_rows = 3;
         this.grid = new TicTacToe();
 
-        this.socket = new Client("localhost", 3070);
+        this.socket = new Client(host, port);
         if(this.socket.getTurn() == 1) {
             this.myTurn = true;
         }
